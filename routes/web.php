@@ -6,6 +6,12 @@ Route::get('/', function () {
     return view('template');
 });
 
+Route::view('/dashboard', 'dashboard.index')->name('dashboard');
+
+Route::resource('categories', App\Http\Controllers\categoryController::class);
+
+Route::view('/categories', 'categories.index')->name('categories');
+
 Route::get('/login', function () {
     return view('auth.login');
 });
