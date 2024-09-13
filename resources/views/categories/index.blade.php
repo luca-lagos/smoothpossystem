@@ -5,13 +5,13 @@
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 @endpush
 @section('content')
-<div class="mb-4">
+<div class="container-fluid mb-4 col-12">
         <h1 class="h3 mb-3 text-gray-800">Categorías</h1>
         <ol class="breadcrumb mb-3">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item">Categorías</li>
+            <li class="breadcrumb-item active">Categorías</li>
         </ol>
-        <a href="#"><button type="button" class="btn btn-primary mb-3">AGREGAR UNA CATEGORÍA</button></a>
+        <a href="{{ route('categories.create') }}"><button type="button" class="btn btn-primary mb-3">AGREGAR UNA CATEGORÍA</button></a>
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>

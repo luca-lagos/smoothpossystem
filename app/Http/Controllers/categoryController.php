@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\storeCategoryRequest;
 use Illuminate\Http\Request;
 
 class categoryController extends Controller
@@ -19,15 +20,15 @@ class categoryController extends Controller
      */
     public function create()
     {
-        //
+        return view('categories.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(storeCategoryRequest $request)
     {
-        //
+        
     }
 
     /**
