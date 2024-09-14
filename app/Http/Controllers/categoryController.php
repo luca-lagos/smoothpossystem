@@ -3,7 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\storeCategoryRequest;
+use App\Models\Category;
+use App\Models\Characteristic;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class categoryController extends Controller
 {
@@ -12,7 +16,9 @@ class categoryController extends Controller
      */
     public function index()
     {
-        return view('categories.index');
+        $categories = Category::with('characteristic')->latest()->get();
+        dd($categories);
+        return view('categories.index', ['categories' => $categories]);
     }
 
     /**
@@ -28,7 +34,17 @@ class categoryController extends Controller
      */
     public function store(storeCategoryRequest $request)
     {
-        
+        //dd($request);
+        try {
+            DB::beginTransaction();
+            $characteristic = Characteristic::create($request->validated());
+            $characteristic->category()->create(['characteristic_id' => $characteristic->id]);
+            DB::commit();
+        } catch (Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->withErrors(['message' => 'Hubo un error al intentar guardar la categoría.']);
+        }
+        return redirect()->route('categories')->with('success', 'Categoría creada correctamente :)');
     }
 
     /**

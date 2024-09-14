@@ -14,7 +14,9 @@ class Category extends Model
         return $this->belongsToMany(Product::class)->withTimestamps();
     }
 
-    public function Characteristic(){
+    public function characteristic(){
         return $this->belongsTo(Characteristic::class);
     }
+
+    protected $fillable = ['characteristic_id'];
 }

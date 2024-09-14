@@ -23,13 +23,19 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="name" class="form-label">Nombre</label>
-                        <input type="text" name="name" id="name" class="form-control mb-3" placeholder="Ingrese un nombre">
+                        <input type="text" name="name" id="name" class="form-control" placeholder="Ingrese un nombre" value="{{old('name')}}">
+                        @error('name')
+                            <small class="text-danger">{{'* '.$message}}</small>
+                        @enderror
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-12 mt-3">
                         <label for="description" class="form-label">Descripción</label>
-                        <textarea name="description" id="description" rows="10" class="form-control mb-3"></textarea>
+                        <textarea name="description" id="description" rows="10" class="form-control">{{old('description')}}</textarea>
+                        @error('description')
+                            <small class="text-danger">{{'* '.$message}}</small>
+                        @enderror
                     </div>
-                    <div class="col-md-12 text-right">
+                    <div class="col-md-12 text-right mt-3">
                         <button type="submit" class="btn btn-primary text-center px-4 py-2">CREAR</button>
                     </div>
                 </div>
