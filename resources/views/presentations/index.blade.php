@@ -1,5 +1,5 @@
 @extends('template')
-@section('title', 'Categorías')
+@section('title', 'Presentaciones')
 @push('css')
     <!-- Custom styles for this page -->
     <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
@@ -30,16 +30,16 @@
     @endif
 
     <div class="container-fluid mb-4 col-12">
-        <h1 class="h3 mb-3 text-gray-800">Categorías</h1>
+        <h1 class="h3 mb-3 text-gray-800">Presentaciones</h1>
         <ol class="breadcrumb mb-3">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li class="breadcrumb-item active">Categorías</li>
+            <li class="breadcrumb-item active">Presentaciones</li>
         </ol>
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex justify-content-between align-items-center">
                 <h5 class="m-0 font-weight-bold text-primary">Listado de elementos</h5>
-                <a href="{{ route('categories.create') }}"><button type="button" class="btn btn-primary">CREAR UNA
-                        CATEGORÍA</button></a>
+                <a href="{{ route('presentations.create') }}"><button type="button" class="btn btn-primary">CREAR UNA
+                        PRESENTACIÓN</button></a>
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -53,18 +53,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($categories as $category)
+                            @foreach ($presentations as $presentation)
                                 <tr>
-                                    <td>{{ $category->characteristic->name }}</td>
+                                    <td>{{ $presentation->characteristic->name }}</td>
                                     <td>
-                                        @if ($category->characteristic->description != null)
-                                            {{ $category->characteristic->description }}
+                                        @if ($presentation->characteristic->description != null)
+                                            {{ $presentation->characteristic->description }}
                                         @else
                                             -
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($category->characteristic->status == 1)
+                                        @if ($presentation->characteristic->status == 1)
                                             <span class="fw-bolder p-1 rounded bg-success text-white">ACTIVO</span>
                                         @else
                                             <span class="fw-bolder p-1 rounded bg-danger text-white">NO ACTIVO</span>
@@ -72,18 +72,18 @@
                                     </td>
                                     <td class="d-flex justify-content-center align-items-center">
                                         <div class="btn-group">
-                                            <form action="{{ route('categories.edit', ['category' => $category]) }}">
+                                            <form action="{{ route('presentations.edit', ['presentation' => $presentation]) }}">
                                                 @csrf
                                                 <button type="submit" class="btn btn-warning rounded px-4 mr-1"><i
                                                         class="fas fa-edit"></i></button>
                                             </form>
-                                            @if ($category->characteristic->status == 1)
+                                            @if ($presentation->characteristic->status == 1)
                                                 <button class="btn btn-danger rounded px-4 ml-1" data-toggle="modal"
-                                                    data-target="#confirmModal-{{ $category->id, $category->characteristic->name }}"><i
+                                                    data-target="#confirmModal-{{ $presentation->id, $presentation->characteristic->name }}"><i
                                                         class="fa fa-trash"></i></button>
                                             @else
                                                 <button class="btn btn-success rounded px-4 ml-1" data-toggle="modal"
-                                                    data-target="#confirmModal-{{ $category->id, $category->characteristic->name }}"><i
+                                                    data-target="#confirmModal-{{ $presentation->id, $presentation->characteristic->name }}"><i
                                                         class="fas fa-undo-alt"></i></button>
                                             @endif
 
@@ -93,10 +93,10 @@
 
                                 <!-- Modal -->
                                 <div class="modal fade"
-                                    id="confirmModal-{{ $category->id, $category->characteristic->name }}"" tabindex="-1"
+                                    id="confirmModal-{{ $presentation->id, $presentation->characteristic->name }}"" tabindex="-1"
                                     aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog">
-                                        @if ($category->characteristic->status == 1)
+                                        @if ($presentation->characteristic->status == 1)
                                             <div class="modal-content">
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="exampleModalLabel">Confirmar desactivación
@@ -107,14 +107,14 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    ¿Estás seguro de desactivar la categoría
-                                                    "{{ $category->characteristic->name }}"?
+                                                    ¿Estás seguro de desactivar la presentación
+                                                    "{{ $presentation->characteristic->name }}"?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Cerrar</button>
                                                     <form
-                                                        action="{{ route('categories.destroy', ['category' => $category->id]) }}"
+                                                        action="{{ route('presentations.destroy', ['presentation' => $presentation->id]) }}"
                                                         method="post">
                                                         @method('DELETE')
                                                         @csrf
@@ -133,14 +133,14 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    ¿Estás seguro de activar la categoría
-                                                    "{{ $category->characteristic->name }}"?
+                                                    ¿Estás seguro de activar la presentación
+                                                    "{{ $presentation->characteristic->name }}"?
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Cerrar</button>
                                                     <form
-                                                        action="{{ route('categories.destroy', ['category' => $category->id]) }}"
+                                                        action="{{ route('presentations.destroy', ['presentation' => $presentation->id]) }}"
                                                         method="post">
                                                         @method('DELETE')
                                                         @csrf

@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\brandController;
+use App\Http\Controllers\categoryController;
+use App\Http\Controllers\presentationController;
+use App\Http\Controllers\productController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,9 +12,12 @@ Route::get('/', function () {
 
 Route::view('/dashboard', 'dashboard.index')->name('dashboard');
 
-Route::resource('categories', App\Http\Controllers\categoryController::class);
-
-Route::view('/categories', 'categories.index')->name('categories');
+Route::resources([
+    'categories' => categoryController::class,
+    'brands' => brandController::class,
+    'presentations' => presentationController::class,
+    'products' => productController::class,
+]);
 
 Route::get('/login', function () {
     return view('auth.login');

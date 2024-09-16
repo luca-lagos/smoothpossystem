@@ -89,17 +89,35 @@
 
     <!-- Nav Item - Charts -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ route('categories') }}">
+        <a class="nav-link" href="{{ route('categories.index') }}">
             <i class="fas fa-fw fa-tags"></i>
             <span>Categorías</span></a>
     </li>
 
-    <!-- Nav Item - Tables -->
     <li class="nav-item">
+        <a class="nav-link" href="{{ route('brands.index') }}">
+            <i class="fas fa-copyright"></i>
+            <span>Marcas</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('presentations.index') }}">
+            <i class="fas fa-file-powerpoint"></i>
+            <span>Presentaciones</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('products.index') }}">
+            <i class="fas fa-box"></i>
+            <span>Productos</span></a>
+    </li>
+
+    <!-- Nav Item - Tables -->
+    <!--<li class="nav-item">
         <a class="nav-link" href="tables.html">
             <i class="fas fa-fw fa-table"></i>
             <span>Tables</span></a>
-    </li>
+    </li>-->
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
@@ -110,10 +128,10 @@
     </div>
 
     <!-- Sidebar Message -->
-    <div class="sidebar-card d-none d-lg-flex">
+    <!--<div class="sidebar-card d-none d-lg-flex">
         <img class="sidebar-card-illustration mb-2" src="img/undraw_rocket.svg" alt="...">
         <h6 class="text-center mb-2">Bienvenido <strong>DOUGLAS</strong></h6>
-    </div>
+    </div>-->
 
 </ul>
 <!-- End of Sidebar -->

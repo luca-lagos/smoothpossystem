@@ -11,14 +11,14 @@
 @endpush
 @section('content')
     <div class="container-fluid mb-4">
-        <h1 class="h3 mb-3 text-gray-800">Crear categoría</h1>
+        <h1 class="h3 mb-3 text-gray-800">Crear marca</h1>
         <ol class="breadcrumb mb-3">
             <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-           <li class="breadcrumb-item"> <a href="{{route('categories.index')}}">Categorías</a></li>
-            <li class="breadcrumb-item active">Crear categoría</li>
+           <li class="breadcrumb-item"> <a href="{{route('brands.index')}}">Marcas</a></li>
+            <li class="breadcrumb-item active">Crear marca</li>
         </ol>
         <div class="w-100 mt-3 border border-3 border-primary rounded p-4">
-            <form action="{{ route('categories.store') }}" method="post">
+            <form action="{{ route('brands.store') }}" method="post">
                 @csrf
                 <div class="row g-3">
                     <div class="col-md-6">

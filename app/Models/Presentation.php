@@ -16,4 +16,6 @@ class Presentation extends Model
     public function Characteristic(){
         return $this->belongsTo(Characteristic::class);
     }
+
+    protected $fillable = ['characteristic_id'];
 }

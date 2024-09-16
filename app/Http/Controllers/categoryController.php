@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\storeCategoryRequest;
+use App\Http\Requests\updateCategoryRequest;
 use App\Models\Category;
 use App\Models\Characteristic;
 use Exception;
@@ -17,7 +18,6 @@ class categoryController extends Controller
     public function index()
     {
         $categories = Category::with('characteristic')->latest()->get();
-        dd($categories);
         return view('categories.index', ['categories' => $categories]);
     }
 
@@ -34,7 +34,6 @@ class categoryController extends Controller
      */
     public function store(storeCategoryRequest $request)
     {
-        //dd($request);
         try {
             DB::beginTransaction();
             $characteristic = Characteristic::create($request->validated());
@@ -42,9 +41,8 @@ class categoryController extends Controller
             DB::commit();
         } catch (Exception $e) {
             DB::rollBack();
-            return back()->withInput()->withErrors(['message' => 'Hubo un error al intentar guardar la categoría.']);
         }
-        return redirect()->route('categories')->with('success', 'Categoría creada correctamente :)');
+        return redirect()->route('categories.index')->with('success', 'Categoría creada correctamente :)');
     }
 
     /**
@@ -58,17 +56,23 @@ class categoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Category $category)
     {
-        //
+        return view('categories.edit', ['category' => $category]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(updateCategoryRequest $request, Category $category)
     {
-        //
+        try {
+            Characteristic::where('id', $category->characteristic->id)->update($request->validated());
+            /*$category->characteristic->update($request->all());*/
+        } catch (Exception $e) {
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Categoría actualizada correctamente :)');
     }
 
     /**
@@ -76,6 +80,17 @@ class categoryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $category = Category::find($id);
+        if ($category->characteristic->status == 1) {
+            Characteristic::where('id', $category->characteristic->id)->update([
+                'status' => '0'
+            ]);
+        } else {
+            Characteristic::where('id', $category->characteristic->id)->update([
+                'status' => '1'
+            ]);
+        }
+
+        return redirect()->route('categories.index')->with('success', 'Estado actualizado correctamente :)');
     }
 }
