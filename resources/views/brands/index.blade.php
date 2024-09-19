@@ -144,7 +144,7 @@
                                                         method="post">
                                                         @method('DELETE')
                                                         @csrf
-                                                        <button type="submit" class="btn btn-danger">Activar</button>
+                                                        <button type="submit" class="btn btn-success">Activar</button>
                                                     </form>
                                                 </div>
                                             </div>

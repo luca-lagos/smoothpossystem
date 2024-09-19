@@ -9,13 +9,15 @@ class Supplier extends Model
 {
     use HasFactory;
 
-    public function person()
+    public function people()
     {
-        return $this->belongsTo(Person::class);
+        return $this->belongsTo(People::class);
     }
     
     public function shops()
     {
         return $this->hasMany(Shop::class);
     }
+
+    protected $fillable = ['people_id'];
 }

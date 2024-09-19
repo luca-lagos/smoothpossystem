@@ -9,11 +9,13 @@ class Client extends Model
 {
     use HasFactory;
 
-    public function person(){
-        return $this->belongsTo(Person::class);
+    public function people(){
+        return $this->belongsTo(People::class);
     }
 
     public function sales(){
         return $this->hasMany(Sale::class);
     }
+
+    protected $fillable = ['people_id'];
 }

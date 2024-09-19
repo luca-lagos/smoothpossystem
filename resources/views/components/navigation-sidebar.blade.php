@@ -112,6 +112,18 @@
             <span>Productos</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('suppliers.index') }}">
+            <i class="fas fa-user-tie"></i>
+            <span>Proveedores</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ route('clients.index') }}">
+            <i class="fas fa-users"></i>
+            <span>Clientes</span></a>
+    </li>
+
     <!-- Nav Item - Tables -->
     <!--<li class="nav-item">
         <a class="nav-link" href="tables.html">
