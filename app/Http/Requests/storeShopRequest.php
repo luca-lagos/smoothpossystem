@@ -25,7 +25,9 @@ class storeShopRequest extends FormRequest
             'supplier_id' => 'required|exists:suppliers,id',
             'voucher_id' => 'required|exists:vouchers,id',
             'voucher_number' => 'required|unique:shops,voucher_number|max:255',
-            'tax' => 'required'
+            'tax' => 'required',
+            'date_time' => 'required',
+            'total' => 'required'
         ];
     }
 }

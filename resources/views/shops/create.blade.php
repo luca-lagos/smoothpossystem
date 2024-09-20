@@ -51,9 +51,8 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-boxes"></i></span>
                                             </div>
-                                            <input required type="number" step="any" name="count" id="count"
-                                                class="form-control" placeholder="Ingrese la cantidad"
-                                                value="{{ old('count') }}">
+                                            <input type="number" step="any" name="count" id="count"
+                                                class="form-control" placeholder="Ingrese la cantidad">
                                         </div>
                                     </div>
                                     <div class="col-4 mt-3">
@@ -62,9 +61,8 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                             </div>
-                                            <input required type="number" step="any" name="shop_price" id="shop_price"
-                                                class="form-control" placeholder="Ingrese el precio"
-                                                value="{{ old('shop_price') }}">
+                                            <input type="number" step="any" name="shop_price" id="shop_price"
+                                                class="form-control" placeholder="Ingrese el precio">
                                         </div>
                                     </div>
                                     <div class="col-4 mt-3">
@@ -73,9 +71,8 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                             </div>
-                                            <input required type="number" step="any" name="sale_price" id="sale_price"
-                                                class="form-control" placeholder="Ingrese el precio"
-                                                value="{{ old('sale_price') }}">
+                                            <input type="number" step="any" name="sale_price" id="sale_price"
+                                                class="form-control" placeholder="Ingrese el precio">
                                         </div>
                                     </div>
                                     <div class="col-12 mt-4 text-right">
@@ -111,22 +108,22 @@
                                                 <tr>
                                                     <th></th>
                                                     <th colspan="4" class="text-white">SUMAS</th>
-                                                    <th colspan="2" class="text-white"><span id="sums">$0</span>
+                                                    <th colspan="2" class="text-white">$<span id="sums">0</span>
                                                     </th>
                                                 </tr>
                                                 <tr>
                                                     <th></th>
                                                     <th colspan="4" class="text-white">IMPUESTOS</th>
-                                                    <th colspan="2" class="text-white"><span
-                                                            id="tax_percentage">$0</span>
+                                                    <th colspan="2" class="text-white">$<span
+                                                            id="tax_percentage">0</span>
                                                     </th>
                                                 </tr>
                                                 <tr>
                                                     <th></th>
                                                     <th colspan="4" class="text-white">PRECIO TOTAL</th>
-                                                    <th colspan="2" class="text-white"><input type="hidden"
-                                                            name="total" value="0" id="input_total"><span
-                                                            id="total">$0</span>
+                                                    <th colspan="2" class="text-white">$<input
+                                                            type="hidden" name="total" value="0"
+                                                            id="input_total"><span id="total">0</span>
                                                     </th>
                                                 </tr>
                                             </tfoot>
@@ -195,7 +192,7 @@
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text border-success"><i
-                                                        class="fas fa-money-bill-wave-alt"></i></span>
+                                                        id="icon_tax" class="fas fa-percentage"></i></span>
                                             </div>
                                             <input readonly type="text" name="tax" id="tax"
                                                 class="form-control border-success">
@@ -208,8 +205,13 @@
                                                 <span class="input-group-text border-success"><i
                                                         class="fas fa-calendar-minus"></i></span>
                                             </div>
-                                            <input readonly type="date" name="date_time" id="date_time"
+                                            <input readonly type="actual_date" name="actual_date" id="actual_date"
                                                 class="form-control border-success" value="<?php echo date('Y-m-d'); ?>">
+                                            <?php 
+                                                use Carbon\Carbon;
+                                                $date_time = Carbon::now()->toDateTimeString();
+                                                ?>
+                                            <input type="hidden" name="date_time" value="{{ $date_time }}">
                                         </div>
                                     </div>
                                     <div class="col-12 mt-4">
@@ -275,7 +277,7 @@
 
             disableButtons();
 
-            $('#tax').val(tax_percentage + '%');
+            $('#tax').val(tax_percentage);
         })
 
         function disableButtons() {
@@ -324,10 +326,13 @@
                         counter++;
                         disableButtons();
 
-                        $('#sums').html('$' + sums);
-                        $('#tax_percentage').html('$' + tax_value);
-                        $('#total').html('$' + total);
-                        $('#tax').val('$' + tax_value);
+                        $('#sums').html(sums);
+                        $('#tax_percentage').html(tax_value);
+                        $('#total').html(total);
+                        $('#tax').val(tax_value);
+                        $('#input_total').val(total);
+                        $('#icon_tax').last().removeClass('fa-percentage');
+                        $('#icon_tax').last().addClass('fa-money-bill-wave-alt');
                     } else {
                         showModal('El precio de venta no puede ser menor o igual al precio de compra');
                     }
@@ -344,17 +349,21 @@
             tax_value = round(sums / 100 * tax_percentage);
             total = round(sums + tax_value);
 
-            $('#sums').html('$' + sums);
-            $('#tax_percentage').html('$' + tax_value);
-            $('#total').html('$' + total);
+            $('#sums').html(sums);
+            $('#tax_percentage').html(tax_value);
+            $('#total').html(total);
             if (tax_value == 0) {
-                $('#tax').val(tax_percentage + '%');
+                $('#tax').val(tax_percentage);
             } else {
-                $('#tax').val('$' + tax_value);
+                $('#tax').val(tax_value);
             }
+            $('#input_total').val(total);
 
             $('#row' + index).remove();
             disableButtons();
+            $('#icon_tax').last().removeClass('fa-money-bill-wave-alt');
+            $('#icon_tax').last().addClass('fa-percentage');
+                        
         }
 
         function cancelShop() {
@@ -369,13 +378,17 @@
             tax_value = 0;
             total = 0;
 
-            $('#sums').html('$' + sums);
-            $('#tax_percentage').html('$' + tax_value);
-            $('#total').html('$' + total);
-            $('#tax').val(tax_percentage + '%');
+            $('#sums').html(sums);
+            $('#tax_percentage').html(tax_value);
+            $('#total').html(total);
+            $('#tax').val(tax_percentage);
+            $('#input_total').val(total);
 
             clearData();
             disableButtons();
+
+            $('#icon_tax').last().removeClass('fa-money-bill-wave-alt');
+            $('#icon_tax').last().addClass('fa-percentage');
         }
 
         function clearData() {

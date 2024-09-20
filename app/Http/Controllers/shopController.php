@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\storeShopRequest;
 use App\Models\Product;
+use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\Voucher;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class shopController extends Controller
 {
@@ -23,10 +26,12 @@ class shopController extends Controller
      */
     public function create()
     {
-        $suppliers = Supplier::all();
+        $suppliers = Supplier::whereHas('people', function ($query) {
+            $query->where('status', 1);
+        })->get();
         $vouchers = Voucher::all();
-        $products = Product::all();
-        return view('shops.create', compact('suppliers','vouchers','products'));
+        $products = Product::where('status', 1)->get();
+        return view('shops.create', compact('suppliers', 'vouchers', 'products'));
     }
 
     /**
@@ -34,7 +39,43 @@ class shopController extends Controller
      */
     public function store(storeShopRequest $request)
     {
-        dd($request);
+        try {
+            DB::beginTransaction();
+            $shop = Shop::create($request->validated());
+            $array_product = $request->get('array_id_product');
+            $array_count = $request->get('array_count');
+            $array_shop_price = $request->get('array_shop_price');
+            $array_sale_price = $request->get('array_sale_price');
+
+            $size_array = count($array_product);
+            $counter = 0;
+            while ($counter < $size_array) {
+                $shop->products()->syncWithoutDetaching([
+                    $array_product[$counter] => [
+                        'count' => $array_count[$counter],
+                        'shop_price' => $array_shop_price[$counter],
+                        'sale_price' => $array_sale_price[$counter],
+                    ]
+                ]);
+
+                $product = Product::find($array_product[$counter]);
+                $actual_stock = $product->count;
+                $new_stock = intval($array_count[$counter]);
+
+                DB::table('products')->where('id', $product->id)->update([
+                    'count' => $actual_stock + $new_stock,
+                ]);
+
+                $counter++;
+            }
+            DB::commit();
+        } catch (Exception $e) {
+            error_log($e);
+            info($e);
+            DB::rollBack();
+        }
+
+        return redirect()->route('shops.index')->with('success', 'La compra se ha realizado exitosamente :)');
     }
 
     /**

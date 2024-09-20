@@ -21,6 +21,8 @@ class Shop extends Model
 
     public function products()
     {
-        return $this->belongsToMany(Product::class)->withTimestamps()->withPivot('count','shop_price','sale_price');
+        return $this->belongsToMany(Product::class)->withTimestamps()->withPivot('count', 'shop_price', 'sale_price');
     }
+
+    protected $fillable = ['date_time', 'tax', 'voucher_number', 'total', 'voucher_id', 'supplier_id'];
 }
