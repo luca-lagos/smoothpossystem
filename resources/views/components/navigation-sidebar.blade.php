@@ -124,6 +124,21 @@
             <span>Clientes</span></a>
     </li>
 
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
+            aria-expanded="true" aria-controls="collapsePages">
+            <i class="fas fa-shopping-cart"></i>
+            <span>Compras</span>
+        </a>
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Opciones:</h6>
+                <a class="collapse-item" href="{{route('shops.index')}}">Ver todas</a>
+                <a class="collapse-item" href="{{route('shops.create')}}">Crear una compra</a>
+            </div>
+        </div>
+    </li>
+
     <!-- Nav Item - Tables -->
     <!--<li class="nav-item">
         <a class="nav-link" href="tables.html">

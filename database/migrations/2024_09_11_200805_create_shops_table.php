@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->dateTime('date_time');
             $table->tinyInteger('status')->default(1);
-            $table->string('voucher',255);
+            $table->string('voucher_number',255);
             $table->foreignId('voucher_id')->nullable()->constrained('vouchers')->onDelete('set null');
             $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->onDelete('set null');
             $table->decimal('tax',8,2,true);

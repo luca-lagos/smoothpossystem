@@ -172,11 +172,4 @@
 
     <!-- Page level custom scripts -->
     <script src="js/demo/datatables-demo.js"></script>
-    <script>
-        $('#dataTable').DataTable({
-            'language': {
-                'url': '//cdn.datatables.net/plug-ins/2.1.6/i18n/es-MX.json',
-            },
-        })
-    </script>
 @endpush

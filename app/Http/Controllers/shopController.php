@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\storeShopRequest;
+use App\Models\Product;
+use App\Models\Supplier;
+use App\Models\Voucher;
 use Illuminate\Http\Request;
 
 class shopController extends Controller
@@ -11,7 +15,7 @@ class shopController extends Controller
      */
     public function index()
     {
-        //
+        return view('shops.index');
     }
 
     /**
@@ -19,15 +23,18 @@ class shopController extends Controller
      */
     public function create()
     {
-        //
+        $suppliers = Supplier::all();
+        $vouchers = Voucher::all();
+        $products = Product::all();
+        return view('shops.create', compact('suppliers','vouchers','products'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(storeShopRequest $request)
     {
-        //
+        dd($request);
     }
 
     /**
