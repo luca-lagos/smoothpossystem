@@ -57,6 +57,7 @@
                                 <th>Proveedor</th>
                                 <th>Fecha y hora</th>
                                 <th>Gasto total</th>
+                                <th>Estado</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -64,24 +65,118 @@
                             @foreach ($shops as $shop)
                                 <tr>
                                     <td>
-                                        <p class="fw-semibold mb-1">{{ $shop->voucher->voucher_type }}</p>
-                                        <p class="text-muted mb-0">{{ $shop->voucher_number }}</p>
+                                        <p class="fw-semibold mb-1"><strong>TIPO:
+                                            </strong>{{ strtoupper($shop->voucher->voucher_type) }}</p>
+                                        <p class="text-muted mb-0"><strong>N° </strong>{{ $shop->voucher_number }}</p>
                                     </td>
                                     <td>
-                                        <p class="fw-semibold mb-1">{{ $shop->supplier->people->person_type }}</p>
-                                        <p class="text-muted mb-0">{{ $shop->supplier->people->social_reason }}</p>
+                                        <p class="fw-semibold mb-1"><strong>TIPO:
+                                            </strong>{{ strtoupper($shop->supplier->people->person_type) }}</p>
+                                        <p class="text-muted mb-0"><strong>NOMBRE:
+                                            </strong>{{ $shop->supplier->people->social_reason }}</p>
                                     </td>
-                                    <td>{{ $shop->total }}</td>
+                                    <td>
+                                        <div class="row-not-space">
+                                            <p class="fw-semibold mb-1"><span class="m-1"><i
+                                                        class="fas fa-calendar"></i></span>{{ \Carbon\Carbon::parse($shop->date_time)->format('d-m-Y') }}
+                                            </p>
+                                            <p class="fw-semibold mb-0"><span class="m-1"><i
+                                                        class="fas fa-clock"></i></span>{{ \Carbon\Carbon::parse($shop->date_time)->format('H:i') }}
+                                            </p>
+                                        </div>
+                                    </td>
+                                    <td>${{ round($shop->total) }}</td>
+                                    <td>
+                                        @if ($shop->status == 1)
+                                            <span class="fw-bolder p-1 rounded bg-success text-white">ACTIVO</span>
+                                        @else
+                                            <span class="fw-bolder p-1 rounded bg-danger text-white">NO ACTIVO</span>
+                                        @endif
+                                    </td>
                                     <td class="d-flex justify-content-center align-items-center">
                                         <div class="btn-group">
-                                            <form action="{{ route('shops.edit', ['shop' => $shop]) }}">
+                                            <form action="{{ route('shops.show', ['shop' => $shop]) }}">
                                                 @csrf
-                                                <button type="submit" class="btn btn-warning rounded px-4 ml-1 mr-1"><i
-                                                        class="fas fa-edit"></i></button>
+                                                <button type="submit" class="btn btn-info rounded px-4 ml-1"><i
+                                                        class="fas fa-eye"></i></button>
+                                            </form>
+                                            @if ($shop->status == 1)
+                                                <button class="btn btn-danger rounded px-4 ml-1 mr-1" data-toggle="modal"
+                                                    data-target="#confirmModal-{{ $shop->id, $shop->voucher_number }}"><i
+                                                        class="fa fa-trash"></i></button>
+                                            @else
+                                                <button class="btn btn-dark rounded px-4 ml-1 mr-1" data-toggle="modal"
+                                                    data-target="#confirmModal-{{ $shop->id, $shop->voucher_number }}"><i
+                                                        class="fas fa-undo-alt"></i></button>
+                                            @endif
+
+                                            <form action="{{ route('generate-shop-pdf', ['id' => $shop->id]) }}">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success rounded px-4 mr-1">
+                                                    <i class="fas fa-file-pdf"></i>
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
                                 </tr>
+
+                                <div class="modal fade" id="confirmModal-{{ $shop->id, $shop->voucher_number }}"
+                                    tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        @if ($shop->status == 1)
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Confirmar desactivación
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Estás seguro de desactivar la compra N°
+                                                    "{{ $shop->voucher_number }}"?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Cerrar</button>
+                                                    <form action="{{ route('shops.destroy', ['shop' => $shop->id]) }}"
+                                                        method="post">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-danger">Desactivar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel">Confirmar activación
+                                                    </h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ¿Estás seguro de activar la compra N°
+                                                    "{{ $shop->voucher_number }}"?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                        data-dismiss="modal">Cerrar</button>
+                                                    <form action="{{ route('shops.destroy', ['shop' => $shop->id]) }}"
+                                                        method="post">
+                                                        @method('DELETE')
+                                                        @csrf
+                                                        <button type="submit" class="btn btn-success">Activar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                    </div>
+                                </div>
                             @endforeach
                         </tbody>
                     </table>

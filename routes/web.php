@@ -15,6 +15,8 @@ Route::get('/', function () {
 
 Route::view('/dashboard', 'dashboard.index')->name('dashboard');
 
+Route::get('generate-shop-pdf/{id}', [shopController::class, 'generateShopPDF'])->name('generate-shop-pdf');
+
 Route::resources([
     'categories' => categoryController::class,
     'brands' => brandController::class,

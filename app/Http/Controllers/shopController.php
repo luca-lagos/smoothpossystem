@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Shop;
 use App\Models\Supplier;
 use App\Models\Voucher;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +19,8 @@ class shopController extends Controller
      */
     public function index()
     {
-        return view('shops.index');
+        $shops = Shop::with('voucher', 'supplier.people')->latest()->get();
+        return view('shops.index', compact('shops'));
     }
 
     /**
@@ -81,9 +83,10 @@ class shopController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Shop $shop)
     {
-        //
+        dd($shop);
+        return view('shops.show', compact('shop'));
     }
 
     /**
@@ -107,6 +110,29 @@ class shopController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $shop = Shop::find($id);
+        if ($shop->status == 1) {
+            Shop::where('id', $shop->id)->update([
+                'status' => '0'
+            ]);
+        } else {
+            Shop::where('id', $shop->id)->update([
+                'status' => '1'
+            ]);
+        }
+
+        return redirect()->route('shops.index')->with('success', 'Estado actualizado correctamente :)');
+    }
+
+    public function generateShopPDF(string $id)
+    {
+        $shop = Shop::find($id);
+        $data = [
+            'title' => 'Impresión de producto',
+            'date' => date('m/d/Y'),
+            'shop' => $shop,
+        ];
+        $pdf = Pdf::loadView('shops.generate-shop-pdf', $data);
+        return $pdf->download('shop-voucher' . $shop->voucher_number . '.pdf');
     }
 }

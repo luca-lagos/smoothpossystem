@@ -81,7 +81,7 @@
                                     </div>
                                     <hr style="border: 1px solid lightgrey; width: 95%;" />
                                     <div class="col-12">
-                                        <table id="details_table" class="table table-hover">
+                                        <table id="details_table" class="table table-hover table-bordered table-striped">
                                             <thead class="bg-primary">
                                                 <tr>
                                                     <th class="text-white">#</th>
@@ -106,20 +106,20 @@
                                             </tbody>
                                             <tfoot class="bg-secondary">
                                                 <tr>
-                                                    <th></th>
+                                                    <th class="text-white">#</th>
                                                     <th colspan="4" class="text-white">SUMAS</th>
                                                     <th colspan="2" class="text-white">$<span id="sums">0</span>
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th></th>
+                                                    <th class="text-white">#</th>
                                                     <th colspan="4" class="text-white">IMPUESTOS</th>
                                                     <th colspan="2" class="text-white">$<span
                                                             id="tax_percentage">0</span>
                                                     </th>
                                                 </tr>
                                                 <tr>
-                                                    <th></th>
+                                                    <th class="text-white">#</th>
                                                     <th colspan="4" class="text-white">PRECIO TOTAL</th>
                                                     <th colspan="2" class="text-white">$<input
                                                             type="hidden" name="total" value="0"
