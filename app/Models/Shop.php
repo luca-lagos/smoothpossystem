@@ -24,5 +24,5 @@ class Shop extends Model
         return $this->belongsToMany(Product::class)->withTimestamps()->withPivot('count', 'shop_price', 'sale_price');
     }
 
-    protected $fillable = ['date_time', 'tax', 'voucher_number', 'total', 'voucher_id', 'supplier_id'];
+    protected $fillable = ['date_time', 'tax', 'total', 'voucher_number', 'client_id', 'user_id', 'voucher_id'];
 }

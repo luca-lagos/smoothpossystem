@@ -26,4 +26,6 @@ class Sale extends Model
     public function products(){
         return $this->belongsToMany(Product::class)->withTimestamps()->withPivot('count','sale_price','discount');
     }
+
+    protected $fillable = ['date_time', 'tax', 'voucher_number', 'total', 'voucher_id', 'supplier_id'];
 }

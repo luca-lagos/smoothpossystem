@@ -125,16 +125,31 @@
     </li>
 
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages"
-            aria-expanded="true" aria-controls="collapsePages">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseShops"
+            aria-expanded="true" aria-controls="collapseShops">
             <i class="fas fa-shopping-cart"></i>
             <span>Compras</span>
         </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapseShops" class="collapse" aria-labelledby="headingShops" data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
                 <h6 class="collapse-header">Opciones:</h6>
                 <a class="collapse-item" href="{{route('shops.index')}}">Ver todas</a>
                 <a class="collapse-item" href="{{route('shops.create')}}">Crear una compra</a>
+            </div>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSales"
+            aria-expanded="true" aria-controls="collapseSales">
+            <i class="fas fa-shopping-basket"></i>
+            <span>Ventas</span>
+        </a>
+        <div id="collapseSales" class="collapse" aria-labelledby="headingSales" data-parent="#accordionSidebar">
+            <div class="bg-white py-2 collapse-inner rounded">
+                <h6 class="collapse-header">Opciones:</h6>
+                <a class="collapse-item" href="{{route('sales.index')}}">Ver todas</a>
+                <a class="collapse-item" href="{{route('sales.create')}}">Crear una venta</a>
             </div>
         </div>
     </li>

@@ -5,6 +5,7 @@ use App\Http\Controllers\categoryController;
 use App\Http\Controllers\clientController;
 use App\Http\Controllers\presentationController;
 use App\Http\Controllers\productController;
+use App\Http\Controllers\saleController;
 use App\Http\Controllers\shopController;
 use App\Http\Controllers\supplierController;
 use Illuminate\Support\Facades\Route;
@@ -25,6 +26,7 @@ Route::resources([
     'suppliers' => supplierController::class,
     'clients' => clientController::class,
     'shops' => shopController::class,
+    'sales' => saleController::class
 ]);
 
 Route::get('/login', function () {
