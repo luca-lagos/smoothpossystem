@@ -85,7 +85,6 @@ class shopController extends Controller
      */
     public function show(Shop $shop)
     {
-        dd($shop);
         return view('shops.show', compact('shop'));
     }
 

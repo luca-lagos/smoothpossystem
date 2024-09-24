@@ -40,7 +40,7 @@
                                             title="Elije un producto">
                                             @foreach ($products as $product)
                                                 <option
-                                                    value="{{ $product->id }}-{{ $product->count }}-{{ $product->sale_price }}">
+                                                    value="{{ $product->id }}-{{ $product->stock }}-{{ $product->sale_price }}">
                                                     {{ $product->code . ' / ' . $product->name }}
                                                 </option>
                                             @endforeach
@@ -72,7 +72,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                                             </div>
-                                            <input type="number" step="any" name="sale_price" id="sale_price"
+                                            <input disabled type="number" step="any" name="sale_price" id="sale_price"
                                                 class="form-control" placeholder="Ingrese el precio">
                                         </div>
                                     </div>
@@ -225,7 +225,7 @@
                                             <input type="hidden" name="date_time" value="{{ $date_time }}">
                                         </div>
                                     </div>
-                                    <input type="hidden" name="user_id" value="">
+                                    <input type="hidden" name="user_id" value="1">
                                     <div class="col-12 mt-4">
                                         <button type="submit" class="btn btn-success text-center px-4 py-2 w-100"
                                             id="btn_create_sale">CREAR</button>
@@ -279,6 +279,7 @@
 
         const tax_percentage = 18;
         $(document).ready(function() {
+            $('#product_id').change(showValues);
             $('#btn_add_product').click(function() {
                 addProduct();
             });
@@ -304,14 +305,15 @@
 
         function showValues() {
             let product_data = document.getElementById('product_id').value.split('-');
+            console.log(product_data);
             $('#stock').val(product_data[1]);
-            $('#sale_price').val(product_data[2]);
+            $('#sale_price').val(round(product_data[2]));
         }
 
         function addProduct() {
             let product_data = document.getElementById('product_id').value.split('-');
             let id_product = product_data[0];
-            let name_product = ($('#product_id option:selected').text()).split(' / ')[1];
+            let name_product = $('#product_id option:selected').text();
             let count = $('#count').val();
             let sale_price = $('#sale_price').val();
             let discount = $('#discount').val();
@@ -321,42 +323,47 @@
                 discount = 0;
             }
 
-            if (name_product != '' && name_product != undefined && count != '' && sale_price != '' && discount != '') {
+            if (name_product != '' && name_product != undefined && count != '' && sale_price != '') {
                 if (parseInt(count) > 0 && (count % 1 == 0) && parseFloat(discount) >= 0) {
                     if (parseInt(count) <= parseInt(stock)) {
                         subtotal[counter] = round((count * sale_price) - discount);
-                        sums += subtotal[counter];
-                        tax_value = round(tax_percentage * (sums / 100));
-                        total = round(sums + tax_value);
+                        if (parseInt(discount) < parseInt(subtotal[counter])) {
+                            sums += subtotal[counter];
+                            tax_value = round(tax_percentage * (sums / 100));
+                            total = round(sums + tax_value);
 
-                        let row = '<tr id="row' + counter + '">' + '<th>' + (counter + 1) + '</th>' +
-                            '<td><input type="hidden" name="array_id_product[]" value="' + id_product + '">' +
-                            name_product + '</td>' + '<td><input type="hidden" name="array_count[]" value="' +
-                            count + '">' +
-                            count +
-                            '</td>' + '<td><input type="hidden" name="array_sale_price[]" value="' + sale_price + '">$' +
-                            sale_price + '</td>' + '<td><input type="hidden" name="array_discount[]" value="' +
-                            discount + '">$' + discount + '</td>' +
-                            '<td>$' + subtotal[
-                                counter] +
-                            '</td>' +
-                            '<td>' +
-                            '<button class="btn btn-danger rounded-circle" type="button" onClick="deleteProduct(' +
-                            counter + ')"><i class="fas fa-trash-alt"></i></button>' +
-                            '</td>' + '</tr>';
+                            let row = '<tr id="row' + counter + '">' + '<th>' + (counter + 1) + '</th>' +
+                                '<td><input type="hidden" name="array_id_product[]" value="' + id_product + '">' +
+                                name_product + '</td>' + '<td><input type="hidden" name="array_count[]" value="' +
+                                count + '">' +
+                                count +
+                                '</td>' + '<td><input type="hidden" name="array_sale_price[]" value="' + sale_price +
+                                '">$' +
+                                sale_price + '</td>' + '<td><input type="hidden" name="array_discount[]" value="' +
+                                discount + '">' + (discount == 0 ? 'N/A' : '$' + discount) + '</td>' +
+                                '<td>$' + subtotal[
+                                    counter] +
+                                '</td>' +
+                                '<td>' +
+                                '<button class="btn btn-danger rounded-circle" type="button" onClick="deleteProduct(' +
+                                counter + ')"><i class="fas fa-trash-alt"></i></button>' +
+                                '</td>' + '</tr>';
 
-                        $('#details_table').append(row);
-                        clearData();
-                        counter++;
-                        disableButtons();
+                            $('#details_table').append(row);
+                            clearData();
+                            counter++;
+                            disableButtons();
 
-                        $('#sums').html(sums);
-                        $('#tax_percentage').html(tax_value);
-                        $('#total').html(total);
-                        $('#tax').val(tax_value);
-                        $('#input_total').val(total);
-                        $('#icon_tax').last().removeClass('fa-percentage');
-                        $('#icon_tax').last().addClass('fa-money-bill-wave-alt');
+                            $('#sums').html(sums);
+                            $('#tax_percentage').html(tax_value);
+                            $('#total').html(total);
+                            $('#tax').val(tax_value);
+                            $('#input_total').val(total);
+                            $('#icon_tax').last().removeClass('fa-percentage');
+                            $('#icon_tax').last().addClass('fa-money-bill-wave-alt');
+                        } else {
+                            showModal('El descuento no puede ser mayor al precio de venta');
+                        }
                     } else {
                         showModal('La cantidad no debe superar al stock disponible');
                     }

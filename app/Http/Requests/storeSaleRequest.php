@@ -11,7 +11,7 @@ class storeSaleRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class storeSaleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'date_time' => 'required',
+            'tax' => 'required',
+            'total' => 'required|numeric',
+            'voucher_number' => 'required|unique:sales,voucher_number|max:255',
+            'client_id' => 'required|exists:clients,id',
+            'user_id' => 'required|exists:users,id',
+            'voucher_id' => 'required|exists:vouchers,id'
         ];
     }
 }

@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\storeSaleRequest;
 use App\Models\Client;
 use App\Models\Product;
+use App\Models\Sale;
 use App\Models\Voucher;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -15,7 +19,8 @@ class saleController extends Controller
      */
     public function index()
     {
-        //
+        $sales = Sale::with(['voucher', 'client.people', 'user'])->latest()->get();
+        return view('sales.index', compact('sales'));
     }
 
     /**
@@ -30,7 +35,7 @@ class saleController extends Controller
                 $query->select('max_created_at')->fromSub($subquery, 'subquery')->whereRaw('subquery.product_id = ps.product_id');
             });
         })->select('products.id', 'products.code', 'products.name', 'products.count AS stock', 'ps.sale_price')->where('products.status', 1)->where('products.count', '>', '0')->get();
-        
+
         $clients = Client::whereHas('people', function ($query) {
             $query->where('status', 1);
         })->get();
@@ -42,17 +47,56 @@ class saleController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(storeSaleRequest $request)
     {
-        //
+        dd($request->validated());
+        try {
+            DB::beginTransaction();
+            $sale = Sale::create($request->validated());
+            $array_product = $request->get('array_id_product');
+            $array_count = $request->get('array_count');
+            $array_sale_price = $request->get('array_sale_price');
+            $array_discount = $request->get('array_discount');
+
+            $size_array = count($array_product);
+            $counter = 0;
+
+            while ($counter < $size_array) {
+                $sale->products()->syncWithoutDetaching([
+                    $array_product[$counter] => [
+                        'count' => $array_count[$counter],
+                        'sale_price' => $array_sale_price[$counter],
+                        'discount' => $array_discount[$counter],
+                    ]
+                ]);
+
+                $product = Product::find($array_product[$counter]);
+                $actual_stock = $product->count;
+                $quantity = intval($array_count[$counter]);
+
+                DB::table('products')->where('id', $product->id)->update([
+                    'count' => $actual_stock - $quantity
+                ]);
+
+                $counter++;
+            }
+
+            DB::commit();
+        } catch (Exception $e) {
+            error_log($e);
+            info($e);
+            DB::rollBack();
+        }
+
+        return redirect()->route('sales.index')->with('success', 'La venta se ha realizado correctamente.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Sale $sale)
     {
-        //
+        return view('sales.show', compact('sale'));
     }
 
     /**
@@ -76,6 +120,30 @@ class saleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $sale = Sale::find($id);
+        if ($sale->status == 1) {
+            Sale::where('id', $sale->id)->update([
+                'status' => '0'
+            ]);
+        } else {
+            Sale::where('id', $sale->id)->update([
+                'status' => '1'
+            ]);
+        }
+
+        return redirect()->route('sales.index')->with('success', 'Estado actualizado correctamente :)');
+    }
+
+
+    public function generateSalePDF(string $id)
+    {
+        $sale = Sale::find($id);
+        $data = [
+            'title' => 'Impresión de producto',
+            'date' => date('m/d/Y'),
+            'sale' => $sale,
+        ];
+        $pdf = Pdf::loadView('sales.generate-sale-pdf', $data);
+        return $pdf->download('sale-voucher' . $sale->voucher_number . '.pdf');
     }
 }
